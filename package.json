@@ -2,7 +2,7 @@
   "name": "peerjs-server",
   "version": "1.0.0",
   "dependencies": {
-    "peer": "^1.5.1"
+    "peer": "0.6.1"
   },
   "scripts": {
     "start": "node node_modules/peer/bin/peerjs --port 3000 --path /myapp"
