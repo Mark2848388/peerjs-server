@@ -1,8 +1,22 @@
 const { PeerServer } = require('peer');
+
+// СОЗДАЁМ ПИР-СЕРВЕР
 const peerServer = PeerServer({
     port: 9000,
-    path: '/myapp' // Этот путь важен!
+    path: '/myapp',
+    allow_discovery: true
 });
-console.log('🚀 PeerJS сервер запущен');
-```[citation:12]
-Именно этот путь (`/myapp`) вы указываете в своём HTML-коде. Если он отличается, соединения не будет [citation:12].
+
+// ПРОВЕРКА, ЧТО СЕРВЕР ЗАПУСТИЛСЯ
+peerServer.on('connection', (client) => {
+    console.log('👤 Клиент подключился:', client.getId());
+});
+
+peerServer.on('disconnect', (client) => {
+    console.log('👤 Клиент отключился:', client.getId());
+});
+
+console.log('🚀 PeerJS сервер запущен!');
+console.log('📡 Порт: 9000');
+console.log('🔗 Путь: /myapp');
+console.log('✅ Сервер готов к работе!');
