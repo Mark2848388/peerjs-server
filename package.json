@@ -1,0 +1,7 @@
+{
+  "name": "peerjs-server",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx peerjs-server --port 3000 --path /myapp"
+  }
+}
