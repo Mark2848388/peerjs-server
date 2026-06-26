@@ -1,10 +1,12 @@
 {
-  "name": "peerjs-server",
+  "name": "sfu-signaling-server",
   "version": "1.0.0",
   "dependencies": {
-    "peer": "0.6.1"
+    "peer": "0.6.1",
+    "socket.io": "^4.7.2",
+    "express": "^4.18.2"
   },
   "scripts": {
-    "start": "node node_modules/peer/bin/peerjs --port 3000 --path /myapp"
+    "start": "node server.js"
   }
-}
+} 
