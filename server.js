@@ -1,22 +1,31 @@
+const express = require('express');
 const { PeerServer } = require('peer');
 
-// СОЗДАЁМ ПИР-СЕРВЕР
+const app = express();
+const PORT = process.env.PORT || 8080;
+
+// PeerJS сервер
 const peerServer = PeerServer({
     port: 9000,
-    path: '/myapp',
-    allow_discovery: true
+    path: '/'
 });
 
-// ПРОВЕРКА, ЧТО СЕРВЕР ЗАПУСТИЛСЯ
-peerServer.on('connection', (client) => {
-    console.log('👤 Клиент подключился:', client.getId());
+// Проверка, что сервер работает
+app.get('/', (req, res) => {
+    res.send('✅ PeerJS сервер работает!');
 });
 
-peerServer.on('disconnect', (client) => {
-    console.log('👤 Клиент отключился:', client.getId());
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        peerjs: 'running on port 9000'
+    });
 });
 
-console.log('🚀 PeerJS сервер запущен!');
-console.log('📡 Порт: 9000');
-console.log('🔗 Путь: /myapp');
-console.log('✅ Сервер готов к работе!');
+// Запускаем
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Сервер запущен на порту ${PORT}`);
+    console.log(`🔗 PeerJS: порт 9000, путь: /`);
+    console.log(`🟢 Всё работает!`);
+});
