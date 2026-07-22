@@ -1,6 +1,11 @@
-const { PeerServer } = require('peer');
-const server = PeerServer({
-    port: process.env.PORT || 3000,
-    path: '/myapp'
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', message: 'Сервер работает!' }));
 });
-console.log('Сервер запущен');
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`✅ Сервер запущен на порту ${PORT}`);
+});
