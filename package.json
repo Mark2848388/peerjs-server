@@ -5,6 +5,6 @@
         "start": "node server.js"
     },
     "dependencies": {
-        "peer": "^1.0.0"  // ← НЕ 0.6.1!
+        "peer": "^1.0.0"
     }
 }
