@@ -1,15 +1,6 @@
-const PeerServer = require('peer').PeerServer;
-
-const port = process.env.PORT || 3000;
-
-const server = PeerServer({
-    port: port,
-    path: '/myapp',
-    allow_discovery: true
+const { PeerServer } = require('peer');
+const peerServer = PeerServer({ port: 3000, path: '/myapp' });
+peerServer.on('connection', (client) => {
+  console.log('Клиент подключился:', client.id);
 });
-
-server.on('connection', (client) => {
-    console.log('Клиент подключился:', client.id);
-});
-
-console.log('Сервер PeerJS запущен на порту ' + port);
+console.log('PeerJS сервер запущен на порту 3000');
