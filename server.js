@@ -1,29 +1,97 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const { Server } = require('socket.io');
+const { WebSocketServer } = require('ws');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const wss = new WebSocketServer({ server, path: '/ws' });
 
-// Раздаем статические файлы (HTML, CSS, JS) прямо из корня
-app.use(express.static(__dirname));
+// Отдаем статические файлы (папку public)
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Главная страница: ВСЕГДА отдаем index.html из корня
+// Главная страница
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-io.on('connection', (socket) => {
-    console.log('Пользователь подключился:', socket.id);
-    socket.on('join-room', (roomId) => {
-        socket.join(roomId);
-        socket.to(roomId).emit('user-connected', socket.id);
+// Обработка WebSocket
+wss.on('connection', (ws) => {
+    console.log('WebSocket подключен!');
+
+    ws.on('message', (message) => {
+        try {
+            const data = JSON.parse(message);
+            
+            // Создание комнаты
+            if (data.type === 'create_room') {
+                ws.roomId = data.roomId;
+                ws.send(JSON.stringify({
+                    type: 'room_created',
+                    roomId: data.roomId
+                }));
+            }
+            
+            // Обработка предложения (Offer)
+            if (data.type === 'offer') {
+                wss.clients.forEach(client => {
+                    if (client !== ws && client.roomId === data.roomId) {
+                        client.send(JSON.stringify({
+                            type: 'offer',
+                            sdp: data.sdp,
+                            roomId: data.roomId
+                        }));
+                    }
+                });
+            }
+            
+            // Обработка ответа (Answer)
+            if (data.type === 'answer') {
+                wss.clients.forEach(client => {
+                    if (client !== ws && client.roomId === data.roomId) {
+                        client.send(JSON.stringify({
+                            type: 'answer',
+                            sdp: data.sdp,
+                            roomId: data.roomId
+                        }));
+                    }
+                });
+            }
+            
+            // Обработка ICE кандидатов
+            if (data.type === 'ice_candidate') {
+                wss.clients.forEach(client => {
+                    if (client !== ws && client.roomId === data.roomId) {
+                        client.send(JSON.stringify({
+                            type: 'ice_candidate',
+                            candidate: data.candidate,
+                            roomId: data.roomId
+                        }));
+                    }
+                });
+            }
+            
+            // Обработка присоединения
+            if (data.type === 'peer_joined') {
+                // Общаемся по комнате
+            }
+        } catch (e) {
+            console.error('Ошибка обработки:', e);
+        }
     });
-    socket.on('offer', (offer, roomId) => socket.to(roomId).emit('offer', offer));
-    socket.on('answer', (answer, roomId) => socket.to(roomId).emit('answer', answer));
-    socket.on('ice-candidate', (candidate, roomId) => socket.to(roomId).emit('ice-candidate', candidate));
+
+    ws.on('close', () => {
+        if (ws.roomId) {
+            wss.clients.forEach(client => {
+                if (client.roomId === ws.roomId) {
+                    client.send(JSON.stringify({
+                        type: 'peer_left',
+                        roomId: ws.roomId
+                    }));
+                }
+            });
+        }
+    });
 });
 
 const PORT = process.env.PORT || 3000;
