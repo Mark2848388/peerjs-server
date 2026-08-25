@@ -254,22 +254,28 @@
         
         // Подключиться по код комнаты
         async function connectRoom() {
-            if (!localStream) {
-                await initializeMedia();
-                return;
-            }
-            
-            const code = document.getElementById('code-input').value;
-            if (!code) {
-                document.getElementById('status').textContent = 'Ошибка: Не введен код комнаты';
-                return;
-            }
-            
-            currentRoom = code;
-            document.getElementById('room-code-display').textContent = 'Комната: ' + currentRoom;
-            document.getElementById('status').textContent = 'Подключено. Ожидание собеседника...';
-            
-            await connectToServer();
+    if (!localStream) {
+        await initializeMedia();
+        return;
+    }
+    
+    const code = document.getElementById('code-input').value;
+    if (!code) {
+        document.getElementById('status').textContent = 'Ошибка: Не введен код комнаты';
+        return;
+    }
+    
+    currentRoom = code;
+    document.getElementById('room-code-display').textContent = 'Комната: ' + currentRoom;
+    document.getElementById('status').textContent = 'Подключено. Ожидание собеседника...';
+    
+    await connectToServer();
+    
+    // ОТПРАВЛЯЕМ СИГНАЛ, ЧТО МЫ ПРИСОЕДИНИЛИСЬ
+    ws.send(JSON.stringify({
+        type: 'join_room',
+        roomId: currentRoom
+    }));
         }
         
         // Подключение к серверу
