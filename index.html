@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZENA.sch!</title>
+    <!-- Подключаем стили -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ЭКРАН ЛЕНДИНГА -->
+    <div id="landing-screen">
+        <div class="header">
+            <h1 class="logo">AZENA.sch!</h1>
+            <button class="burger">☰</button>
+        </div>
+
+        <div class="hero">
+            <div class="badge">ОБРАЗОВАТЕЛЬНАЯ ПЛАТФОРМА</div>
+            <h2 class="title">Учись. Создавай. Развивайся.</h2>
+            <p class="subtitle">Всё необходимое для обучения, создания занятий и развития — в одном месте.</p>
+            
+            <!-- Мок-ап телефона -->
+            <div class="phone-mockup">
+                <div class="app-icon">AZ</div>
+                <div class="phone-title">AZENA</div>
+                <div class="phone-card">
+                    <span class="card-icon">✦</span>
+                    <div>
+                        <div class="card-title">Новое занятие</div>
+                        <div class="card-text">Готово к обучению</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <!-- Кнопка входа, которая вызывает звонок -->
+            <button class="btn-primary" onclick="startCall()">
+                <span class="btn-icon">→</span>
+                <div>
+                    <div class="btn-title">Войти</div>
+                    <div class="btn-subtitle">Продолжить обучение</div>
+                </div>
+            </button>
+
+            <button class="btn-secondary">
+                <span class="btn-icon">+</span>
+                <div>
+                    <div class="btn-title">Зарегистрироваться</div>
+                    <div class="btn-subtitle">Создать новый аккаунт</div>
+                </div>
+            </button>
+        </div>
+
+        <div class="features">
+            <div class="divider">ИЛИ</div>
+            <div class="feature-card">
+                <div class="feature-icon">✦</div>
+                <div>
+                    <h3>Красивый интерфейс</h3>
+                    <p>Удобная и современная рабочая среда.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">◇</div>
+                <div>
+                    <h3>Обучение</h3>
+                    <p>Занятия, материалы и задания в одном месте.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">↗</div>
+                <div>
+                    <h3>Видимый прогресс</h3>
+                    <p>Следи за своим развитием и результатами.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН ВИДЕОЗВОНКА (появляется при клике на "Войти") -->
+    <div id="call-screen" style="display: none;">
+        <video id="local-video" autoplay playsinline muted></video>
+        <video id="remote-video" autoplay playsinline></video>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="toggleMic()">🎤</button>
+            <button class="control-btn" onclick="toggleCam()">📷</button>
+            <button class="control-btn hangup" onclick="hangUp()">📞</button>
+        </div>
+    </div>
+
+    <!-- Подключаем сервер -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Подключаем логику -->
+    <script src="app.js"></script>
+</body>
+</html>
